@@ -314,6 +314,8 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
           <tr><td>罠</td><td>毒沼・トゲ・溶岩… 色つきの床は踏むと危険</td></tr>
           <tr><td>装備はずす</td><td>持ち物画面で 装備欄のアイコンをクリック</td></tr>
           <tr><td>手なずけ</td><td>「手なずけの肉」を隣の敵に (弱らせると成功しやすい)</td></tr>
+          <tr><td>セーブ</td><td>S キー ／ 階段を降りるたび 自動でも記録される</td></tr>
+          <tr><td>再開</td><td>タイトルの「つづきから」で 続きを遊べる</td></tr>
           <tr><td>スキル</td><td>1〜4 キー / スキルボタン</td></tr>
           <tr><td>回復薬</td><td>Q キー / ボタン</td></tr>
           <tr><td>持ち物</td><td>E キー (捨てた物は床に残り拾い直せる)</td></tr>
@@ -325,6 +327,8 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
           🏮 アイテム屋がたまに現れる。買い物のほか、同種アイテム2つの<b>合成</b>でレア度UP。<br>
           🐺 笛や鈴、手なずけの肉で 自動で戦う仲間を最大2体 連れられる。<br>
           📖 タイトルの「きろく」で実績とモンスター図鑑をチェック。<br>
+          ⚠ まれに「モンスターの巣」がある。敵がひしめくが お宝も多い。<br>
+          𝕏 冒険の結果は リザルト画面から投稿できる。<br>
           🏰 目指すは地下100階、虚無の支配者。5階ごとにボスが待つ。<br>
           <span style="color:var(--text-dim)">製作: はっちゃけ</span><br>
           倒れたら全てを失う…慎重に、深く潜れ。</p>
@@ -339,7 +343,8 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
     <div id="gameSub">- ANCIENT LABYRINTH -</div>
     <div id="classGrid"></div>
     <div id="titleHint" class="blink">▼ 職業を選んで冒険を始める ▼</div>
-    <button class="btn" id="btnRecords" style="margin-top:16px">📖 きろく / モンスター図鑑</button>
+    <button class="btn" id="btnContinue" style="margin-top:16px;display:none">▶ つづきから</button>
+    <button class="btn" id="btnRecords" style="margin-top:10px">📖 きろく / モンスター図鑑</button>
     <div style="margin-top:14px;color:var(--text-dim);font-size:11px">地下100階の最深部を目指せ ／ © はっちゃけ</div>
   </div>
 
@@ -349,6 +354,7 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
       <h1>力尽きた…</h1>
       <div class="resultStats" id="goStats"></div>
       <div class="resultBtns">
+        <button class="btn" id="goShare">𝕏 に結果を投稿</button>
         <button class="btn" id="goRetry">同じ職業で再挑戦</button>
         <button class="btn" id="goTitleBtn">タイトルへ</button>
       </div>
@@ -370,6 +376,7 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
         <div class="crT">FIN</div>
       </div></div>
       <div class="resultBtns">
+        <button class="btn" id="clearShare">𝕏 に結果を投稿</button>
         <button class="btn" id="clearEndless">さらに深淵へ (エンドレス)</button>
         <button class="btn" id="clearTitleBtn">タイトルへ</button>
       </div>
@@ -402,6 +409,9 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
       [TILE_THEMES] … 床・壁のテーマ (階層帯で切り替わる)
       [HAZARDS]     … 地形の罠 (毒沼・溶岩・トゲの効果)
       [RECORDS]     … やりこみ (実績の条件 / モンスター図鑑)
+      [SAVE]        … 中断セーブ / 再開
+      [SHARE]       … X への結果投稿 (SHARE_URL で公開URLを設定)
+      [MONSTER_HOUSE] … モンスターの巣 (出現率・敵数)
 
     ■ デバッグ
       ブラウザのコンソールで window.DBG からゲーム状態を直接操作可能
@@ -1098,6 +1108,50 @@ defVariant('abyssGolem', 'magmaGolem','深淵ゴーレム',     { S:'#2a2a44', s
 defVariant('dragonSpawn','hellHound', '竜の落とし子',     { W:'#2f8a44', w:'#1e5c30', E:'#ffd75a' }, 2.8, 60);
 defVariant('goldenSlime','iceSlime',  '黄金スライム',     { G:'#ffd75a', H:'#fff0b0', D:'#c09a20' }, 3.0, 70, { gold: 500, drawScale: 1.4 });
 defVariant('voidHound',  'hellHound', '虚無の猟犬',       { W:'#101018', w:'#0a0a10', E:'#ff3a6a' }, 3.6, 82);
+/* ── 各階層帯に厚みを出すバリアント (色替え+能力調整で種類を倍に) ── */
+// 序盤 B1〜10
+defVariant('redSlime',   'slime',    'レッドスライム',   { G:'#e05a4a', H:'#ffa090', D:'#a03020' }, 1.3, 2);
+defVariant('caveBat',    'bat',      'ほらあなコウモリ', { V:'#4a3a6a', v:'#2e2444', R:'#ffd75a' }, 1.2, 3);
+defVariant('mudGolem',   'slime',    'どろ人形',         { G:'#8a6a3a', H:'#c0a070', D:'#5a4020' }, 1.6, 4, { def: 4 });
+defVariant('wildBoar',   'hellHound','あばれ猪',         { W:'#7a5a3a', w:'#4e3a24', E:'#ffd0a0' }, .55, 4);
+defVariant('gobArcher',  'goblin',   'ゴブリンの射手',   { G:'#7a9a4a', g:'#4e6a2a', B:'#8a6a3a' }, 1.1, 5, { ai:'caster', range:4 });
+defVariant('boneWarrior','skeleton', 'スケルトン戦士',   { W:'#d8d0b8', w:'#a89880', E:'#ff6a4a' }, 1.5, 6, { def: 5 });
+defVariant('greenSpider','spider',   'みどり蜘蛛',       { V:'#3a6a3a', v:'#254524', R:'#a0ff60' }, 1.2, 6, { poison:true });
+defVariant('apprentice', 'darkMage', '見習い魔術師',     { V:'#3a4a8a', v:'#26305c', R:'#6ad0ff', O:'#8ab0ff' }, 1.1, 7);
+// 中盤 B10〜25
+defVariant('steelOrc',   'orc',      '鋼のオーク',       { G:'#6a7a8a', g:'#44505c', B:'#8a8a9a' }, 1.5, 11, { def: 8 });
+defVariant('blueWraith', 'wraith',   '蒼の亡霊',         { W:'#6ad0ff', w:'#3a8ac0' }, 1.4, 12, { undead:true });
+defVariant('rockGolem',  'golem',    '岩石ゴーレム',     { S:'#7a7060', s:'#4e463a', R:'#ffa050' }, 1.5, 13, { ai:'slow' });
+defVariant('venomSpider','spider',   'ヴェノムスパイダー',{ V:'#5a2a6a', v:'#3a1844', R:'#d060ff' }, 1.8, 14, { poison:true });
+defVariant('flameImp',   'fireImp',  '炎の小悪魔',       { V:'#8a2a1a', v:'#5c1c10', R:'#ffd75a', O:'#ff8a30' }, 1.6, 15);
+defVariant('graveLich',  'lich',     '墓守リッチ',       { B:'#8a8a6a', b:'#5c5c44' }, 1.5, 16, { undead:true });
+defVariant('iceWolf',    'hellHound','氷狼',             { W:'#a8d8f0', w:'#6a9ac0', E:'#eaffff' }, 1.6, 17);
+defVariant('darkKnight', 'skeleton', '闇の騎士',         { W:'#4a4a5e', w:'#2e2e3c', E:'#ff3a6a' }, 2.2, 18, { def: 10 });
+// 深層 B25〜60
+defVariant('crystalGolem','golem',   '水晶ゴーレム',     { S:'#8ad0e0', s:'#5090a8', R:'#ffffff' }, 2.2, 26, { def: 14 });
+defVariant('soulEater',  'wraith',   '魂喰らい',         { W:'#c060ff', w:'#7a30a8' }, 2.4, 30, { undead:true });
+defVariant('magmaImp',   'fireImp',  'マグマインプ',     { V:'#a03010', v:'#701c08', R:'#ffe070', O:'#ff6020' }, 2.4, 33);
+defVariant('plagueSlime','iceSlime', '疫病スライム',     { G:'#7a9a3a', H:'#c8e070', D:'#4e6a20' }, 2.6, 38, { poison:true });
+defVariant('boneLord',   'lich',     '骸の王',           { B:'#e0d8c0', b:'#a89870' }, 2.6, 45, { undead:true });
+defVariant('hellKnight', 'skeleton', '地獄の騎士',       { W:'#6a2a2a', w:'#441818', E:'#ffd75a' }, 3.0, 52, { def: 18 });
+// 最深部 B60〜
+defVariant('voidWraith', 'wraith',   '虚無の亡霊',       { W:'#3a2a5a', w:'#241a3a' }, 3.4, 65, { undead:true });
+defVariant('starGolem',  'golem',    '星辰のゴーレム',   { S:'#4a4a8a', s:'#2e2e5c', R:'#ffd75a' }, 3.8, 88, { def: 22 });
+// 深層の層を埋める (B25〜100 が途切れないように)
+defVariant('doomSpider', 'spider',   'ドゥームスパイダー',{ V:'#6a1a2a', v:'#440e1a', R:'#ff5a70' }, 2.3, 25, { poison:true });
+defVariant('grimOrc',    'orc',      '鬼将',             { G:'#7a4a6a', g:'#4e2c44', B:'#c8a060' }, 2.5, 29);
+defVariant('ashWraith',  'wraith',   '灰の亡霊',         { W:'#9a9a9a', w:'#666' }, 2.6, 34, { undead:true });
+defVariant('emberHound', 'hellHound','燼の魔犬',         { W:'#5a2a1a', w:'#3a1a10', E:'#ff9a30' }, 2.8, 40);
+defVariant('mageLord',   'darkMage', '大魔導師',         { V:'#2a1a5a', v:'#1a1038', R:'#ffd75a', O:'#c060ff' }, 3.0, 44, { range: 5 });
+defVariant('abyssSlime', 'iceSlime', '深淵スライム',     { G:'#3a2a5a', H:'#8a6ac8', D:'#241a3a' }, 3.0, 48);
+defVariant('vileKnight', 'skeleton', '呪詛の騎士',       { W:'#3a4a3a', w:'#242e24', E:'#a0ff60' }, 3.2, 56, { def: 20 });
+defVariant('chaosGolem', 'magmaGolem','混沌ゴーレム',    { S:'#5a2a5a', s:'#3a1838', R:'#ff60d0' }, 3.2, 62, { ai:'slow' });
+defVariant('deathLich',  'lich',     '死霊王',           { B:'#c8a0ff', b:'#8060c0' }, 3.4, 68, { undead:true, range: 5 });
+defVariant('inferHound', 'hellHound','煉獄の猟犬',       { W:'#8a1a10', w:'#5a0e08', E:'#ffe070' }, 3.6, 74);
+defVariant('titanShade', 'golem',    '巨神の影',         { S:'#2a2a3a', s:'#1a1a26', R:'#c060ff' }, 3.8, 79, { def: 20 });
+defVariant('voidMage',   'darkMage', '虚無の術師',       { V:'#1a1030', v:'#100a1e', R:'#ff3a6a', O:'#a05aff' }, 4.0, 84, { range: 6 });
+defVariant('finalGuard', 'skeleton', '最果ての番人',     { W:'#e0e0f0', w:'#a0a0c0', E:'#ff3a6a' }, 4.4, 92, { def: 24 });
+defVariant('abyssSpider','spider',   '深淵の蜘蛛',       { V:'#2a1a3a', v:'#1a1024', R:'#ff5ad0' }, 4.2, 95, { poison:true });
 // (エンドレス用ボス候補は ENDLESS_BOSSES の定義側で拡張済み)
 const BOSS_TABLE = { 5:'goblinKing', 10:'boneDragon', 15:'demonLord', 20:'elderDragon' };
 const BOSS_CYCLE = ['goblinKing','boneDragon','demonLord','frostDragon','titanGolem','shadowKing','infernoDragon','elderDragon'];
@@ -2069,7 +2123,7 @@ const G = {
   floats:[], parts:[], shake:0, hurtT:0, _lowWarnAt:0,
   msg:[], killCount:0, deepest:1, camSnap:false,
   allies:[], projs:[], swings:[],
-  score:0, shop:null, tileTheme:-1, hazards:null, rubble:null,
+  score:0, shop:null, tileTheme:-1, hazards:null, rubble:null, mhouse:null, mhWoke:false,
 };
 window.DBG = { G, CONFIG, AudioSys, SKILLS, ENEMIES, CLASSES };
 
@@ -2155,10 +2209,15 @@ function bossKeyFor(fl){
   return null;
 }
 function pickEnemyKey(fl){
-  const cand = Object.keys(ENEMIES).filter(k => {
+  // 出現ウィンドウ: 深いほど広くとる (深層で候補が枯れないように)
+  const win = fl >= 60 ? 24 : fl >= 30 ? 16 : 9;
+  let cand = Object.keys(ENEMIES).filter(k => {
     const e = ENEMIES[k];
-    return !e.boss && e.minFloor <= fl && fl - e.minFloor <= 9;
+    return !e.boss && e.minFloor <= fl && fl - e.minFloor <= win;
   });
+  if (!cand.length)   // それでも無ければ その階以下で最も深い者たちを使う
+    cand = Object.keys(ENEMIES).filter(k => !ENEMIES[k].boss && ENEMIES[k].minFloor <= fl)
+      .sort((a, b) => ENEMIES[b].minFloor - ENEMIES[a].minFloor).slice(0, 6);
   if (!cand.length) return 'slime';
   return weightedPick(cand.map(k => ({ k, w: 2 + ENEMIES[k].minFloor }))).k;
 }
@@ -2281,6 +2340,37 @@ function genFloor(fl){
   for (let i = 0; i < n; i++){
     const t = freeTile(7);
     if (t) spawnEnemy(pickEnemyKey(fl), t.x, t.y, fl);
+  }
+  // ── [MONSTER_HOUSE] モンスターの巣: 稀に 敵とお宝がひしめく部屋ができる ──
+  G.mhouse = null; G.mhWoke = false;
+  if (!bossKey && fl >= 4 && rnd() < (fl >= 10 ? .1 : .06) && G.rooms.length > 2){
+    // プレイヤーの初期位置を含まない部屋を選ぶ
+    const cand = G.rooms.filter(r =>
+      !(p.x >= r.x - 1 && p.x <= r.x + r.w && p.y >= r.y - 1 && p.y <= r.y + r.h) &&
+      r.w * r.h >= 20);
+    if (cand.length){
+      const r = choice(cand);
+      G.mhouse = { x:r.x, y:r.y, w:r.w, h:r.h };
+      // 敵をぎっしり (部屋の広さに応じて)
+      const mn = Math.min(16, 6 + Math.floor(r.w * r.h / 6));
+      for (let i = 0; i < mn; i++){
+        const mx = rndi(r.x, r.x + r.w - 1), my = rndi(r.y, r.y + r.h - 1);
+        if (!walkable(mx, my) || enemyAt(mx, my)) continue;
+        if (G.stairs && G.stairs.x === mx && G.stairs.y === my) continue;
+        if (G.hazards && G.hazards[idx(mx, my)]) continue;
+        spawnEnemy(pickEnemyKey(fl), mx, my, fl);
+      }
+      // ごほうびのお宝も散らばる
+      for (let i = 0; i < 4; i++){
+        const gx = rndi(r.x, r.x + r.w - 1), gy = rndi(r.y, r.y + r.h - 1);
+        if (!walkable(gx, gy) || enemyAt(gx, gy)) continue;
+        if (G.items.some(it => it.x === gx && it.y === gy)) continue;
+        if (G.hazards && G.hazards[idx(gx, gy)]) continue;
+        G.items.push(rnd() < .5
+          ? { x:gx, y:gy, kind:'gold', amount: 30 + fl * 12 + rndi(0, 40) }
+          : { x:gx, y:gy, kind:'consume', key: pickConsumableKey(fl) });
+      }
+    }
   }
   // ── アイテム ──
   const chests = bossKey ? 1 : 1 + rndi(0, 1);
@@ -2493,6 +2583,25 @@ function healPlayer(amount){
   p.hp = Math.min(p.maxHp, p.hp + h);
   floatText(p.x, p.y, '+' + h, '#7ae08a');
   spawnParticles(p.x, p.y, '#7ae08a', 6);
+}
+
+/* ── [MONSTER_HOUSE] モンスターの巣に踏み込んだか ── */
+function checkMonsterHouse(){
+  const mh = G.mhouse;
+  if (!mh || G.mhWoke) return;
+  const p = G.player;
+  if (p.x < mh.x || p.x >= mh.x + mh.w || p.y < mh.y || p.y >= mh.y + mh.h) return;
+  G.mhWoke = true;
+  addMsg('― モンスターの巣だ！ 一斉に目をさました！ ―');
+  AudioSys.sfx('boss');
+  G.shake = 14;
+  G.hurtT = .5;
+  // 巣の敵を全部起こす (視界外でも動き出す)
+  for (const e of G.enemies){
+    if (e.dead) continue;
+    if (e.x >= mh.x && e.x < mh.x + mh.w && e.y >= mh.y && e.y < mh.y + mh.h) e.awake = true;
+  }
+  showToast('⚠ モンスターの巣！');
 }
 
 /* ── [HAZARDS] 地形の罠 (踏んだ者に発動 / 敵は迷宮の住人なので平気) ── */
@@ -2710,7 +2819,7 @@ function enemiesAct(){
       const d2 = chebDist(e.x, e.y, a.x, a.y);
       if (d2 < td){ td = d2; tgt = a; }
     }
-    const seen = td <= 8 && los(e.x, e.y, tgt.x, tgt.y);
+    const seen = e.awake || (td <= 8 && los(e.x, e.y, tgt.x, tgt.y));   // 巣で起きた敵は執拗に追う
     if (td === 1){ enemyAttack(e, tgt); continue; }
     if (e.ai === 'caster' && seen && td <= e.range){
       const { dmg } = calcDamage(e.atk, tgt.def || 0, 1, 0);
@@ -2765,6 +2874,7 @@ function afterPlayerAction(){
     p.mp = Math.min(p.maxMp, p.mp + g);
   }
   if (G.state !== 'play') return;
+  checkMonsterHouse();
   applyHazard(G.player);
   if (G.state !== 'play') return;
   alliesAct();
@@ -3401,6 +3511,7 @@ function descend(){
   G.deepest = Math.max(G.deepest, G.floor);
   AudioSys.sfx('stairs');
   genFloor(G.floor);
+  saveGame(true);              // 階を降りるたび 自動で中断セーブ
   computeFov();
   const bossKey = bossKeyFor(G.floor);
   if (bossKey){
@@ -3432,6 +3543,7 @@ function gameOver(src){
   if (G.deepest > REC.bestFloor) REC.bestFloor = G.deepest;
   checkAch();
   saveRec();
+  clearSave();                 // 冒険が終わったので 中断データは消す
   setTimeout(() => {
     document.getElementById('gameoverScreen').classList.remove('hidden');
   }, 1100);
@@ -3442,6 +3554,7 @@ function showClear(){
   cancelAuto();
   AudioSys.sfx('clear');
   G.score += 2000;
+  clearSave();
   REC.clears++;
   if (G.score > REC.bestScore) REC.bestScore = G.score;
   checkAch();
@@ -4140,7 +4253,10 @@ function drawMinimap(){
       const i = idx(tx, ty);
       if (!G.explored[i] || G.map[i] !== 0) continue;
       const hz = G.hazards ? G.hazards[i] : 0;
-      x.fillStyle = hz === 1 ? '#3f6a2a' : hz === 2 ? '#7a2f1a' : hz === 3 ? '#565668' : '#33334e';
+      const mh = G.mhouse;
+      const inMh = G.mhWoke && mh && tx >= mh.x && tx < mh.x + mh.w && ty >= mh.y && ty < mh.y + mh.h;
+      x.fillStyle = inMh ? '#6a2a3a'
+        : hz === 1 ? '#3f6a2a' : hz === 2 ? '#7a2f1a' : hz === 3 ? '#565668' : '#33334e';
       x.fillRect(tx * s, ty * s, s, s);
     }
   if (G.stairs && G.explored[idx(G.stairs.x, G.stairs.y)]){
@@ -4369,6 +4485,104 @@ function renderInvDetail(){
   $('actDrop').addEventListener('click', () => { const i = invSel; invSel = -1; dropItem(i); });
 }
 
+/* ═══════════════ [SAVE] 中断セーブ (階層のはじまりを記録) ═══════════════
+   マップ全体ではなく「何階で どんな状態だったか」を保存し、
+   再開時はその階を作り直す方式。セーブデータが軽く 壊れにくい */
+const SAVE_KEY = 'ancientLabyrinth_save';
+function hasSave(){
+  try { return !!localStorage.getItem(SAVE_KEY); } catch (e) { return false; }
+}
+function saveGame(silent){
+  if (G.state !== 'play' || !G.player) return false;
+  const p = G.player;
+  const data = {
+    v: 1, at: Date.now(),
+    clsKey: G.clsKey, floor: G.floor, turn: G.turn, score: G.score,
+    deepest: G.deepest, endless: G.endless, killCount: G.killCount,
+    player: {
+      lv: p.lv, xp: p.xp, gold: p.gold, hp: p.hp, mp: p.mp,
+      inv: p.inv, equip: p.equip, bonus: p.bonus, invMax: p.invMax,
+    },
+    allies: G.allies.filter(a => !a.dead).map(a => ({
+      key:a.key, name:a.name, sprite:a.sprite, pal:a.pal, emoji:a.emoji, pColor:a.pColor,
+      hp:a.hp, maxHp:a.maxHp, atk:a.atk, def:a.def, range:a.range, healer:!!a.healer,
+    })),
+  };
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    if (!silent){ addMsg('冒険を記録した (中断セーブ)'); showToast('💾 セーブしました'); }
+    return true;
+  } catch (e) {
+    if (!silent) addMsg('セーブできない環境のようだ…');
+    return false;
+  }
+}
+function loadGame(){
+  let data;
+  try { data = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); } catch (e) { data = null; }
+  if (!data || !data.clsKey) return false;
+  ensureAudio();
+  G.clsKey = data.clsKey;
+  G.player = makePlayer(data.clsKey);
+  const p = G.player, s = data.player || {};
+  p.lv = s.lv || 1; p.xp = s.xp || 0; p.gold = s.gold || 0;
+  p.inv = s.inv || []; p.invMax = s.invMax || CONFIG.INV_MAX;
+  p.equip = s.equip || p.equip;
+  p.bonus = s.bonus || { atk:0, def:0, hp:0 };
+  pstat(p);
+  p.hp = Math.min(s.hp || p.maxHp, p.maxHp);
+  p.mp = Math.min(s.mp || p.maxMp, p.maxMp);
+  G.floor = data.floor || 1; G.turn = data.turn || 0; G.score = data.score || 0;
+  G.deepest = data.deepest || G.floor; G.endless = !!data.endless;
+  G.killCount = data.killCount || 0;
+  G.hurtT = 0; G.shake = 0; G.projs = []; G.swings = []; G.parts = []; G.floats = [];
+  G.shop = null; G.tileTheme = -1; G.msg = [];
+  G.state = 'play';
+  genFloor(G.floor);
+  // 仲間を復元 (プレイヤーの近くに配置)
+  G.allies = [];
+  for (const a of (data.allies || [])){
+    const spot = nearestFreeSpot(p.x, p.y);
+    if (!spot) break;
+    G.allies.push(Object.assign({ isAlly:true, x:spot.x, y:spot.y, px:spot.x, py:spot.y, dead:false }, a));
+  }
+  computeFov();
+  $('titleScreen').classList.add('hidden');
+  $('gameoverScreen').classList.add('hidden');
+  $('clearScreen').classList.add('hidden');
+  buildSkillBar();
+  updateHud();
+  AudioSys.playBgm(bgmForFloor(G.floor));
+  addMsg('冒険を再開した — B' + G.floor + 'F');
+  return true;
+}
+function clearSave(){
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+}
+
+/* ═══════════════ [SHARE] Xへの投稿 ═══════════════ */
+const SHARE_URL = 'https://hacchake.github.io/ancient-labyrinth/';
+function shareToX(kind){
+  const p = G.player;
+  const fl = G.deepest || G.floor || 1;
+  const cls = p ? CLASSES[p.clsKey].name : '冒険者';
+  let head;
+  if (kind === 'clear') head = '『古の迷宮』地下100階の主を討ち果たした！';
+  else if (kind === 'gameover') head = '『古の迷宮』B' + fl + 'F で力尽きた…';
+  else head = '『古の迷宮』B' + fl + 'F を探索中！';
+  const body = [
+    head,
+    '職業: ' + cls + ' / Lv' + (p ? p.lv : 1),
+    '到達: B' + fl + 'F ／ スコア: ' + G.score,
+    (REC.bestFloor ? '自己最高: B' + REC.bestFloor + 'F' : ''),
+    '',
+    '#古の迷宮 #ブラウザゲーム',
+  ].filter(Boolean).join('\n');
+  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(body) +
+              '&url=' + encodeURIComponent(SHARE_URL);
+  window.open(url, '_blank', 'noopener');
+}
+
 /* ═══════════════ [RECORDS] やりこみ: 実績・図鑑・きろく ═══════════════
    GitHub Pages等ではブラウザに保存され次回も残る。保存できない環境ではセッション内のみ */
 const REC = { bestFloor:0, bestScore:0, kills:{}, ach:{}, digs:0, tames:0, crafts:0, clears:0, bossKills:0, rich:false };
@@ -4394,7 +4608,8 @@ const ACHIEVEMENTS = [
   { key:'dig10',     name:'開拓者',       desc:'壁を10回 壊す',           chk:() => REC.digs >= 10 },
   { key:'rich',      name:'千金の徒',     desc:'1000G を同時に持つ',      chk:() => REC.rich },
   { key:'zukan8',    name:'博物学者',     desc:'図鑑に8種を記録',         chk:() => Object.keys(REC.kills).length >= 8 },
-  { key:'zukanAll',  name:'迷宮博士',     desc:'図鑑をコンプリート',      chk:() => Object.keys(REC.kills).length >= Object.keys(ENEMIES).length },
+  { key:'zukan30',   name:'魔物学者',     desc:'図鑑に30種を記録',        chk:() => Object.keys(REC.kills).length >= 30 },
+  { key:'zukanAll',  name:'迷宮博士',     desc:'図鑑の8割を記録',         chk:() => Object.keys(REC.kills).length >= Math.floor(Object.keys(ENEMIES).length * .8) },
   { key:'score5k',   name:'伝説のスコア', desc:'スコア5000 を達成',       chk:() => REC.bestScore >= 5000 },
 ];
 function checkAch(){
@@ -4626,6 +4841,7 @@ document.addEventListener('keydown', ev => {
   else if (k === '4') useSkill(3);
   else if (k === 'q' || k === 'Q') quickPotion();
   else if (k === 'e' || k === 'E') toggleInv();
+  else if (k === 's' || k === 'S') saveGame();     // 中断セーブ
   else if (k === '?') $('helpModal').classList.remove('hidden');
 });
 // 最初のタッチ/クリックでオーディオ起動 + タイトルBGM
@@ -4720,6 +4936,11 @@ $('stairsNo').addEventListener('click', () => {
   addMsg('階段の前で 立ち止まった');
   afterPlayerAction();
 });
+$('btnContinue').addEventListener('click', () => {
+  if (!loadGame()) addMsg('セーブデータが読めなかった');
+});
+$('goShare').addEventListener('click', () => shareToX('gameover'));
+$('clearShare').addEventListener('click', () => shareToX('clear'));
 $('btnRecords').addEventListener('click', () => {
   renderRecords();
   $('recordsModal').classList.remove('hidden');
@@ -4778,6 +4999,7 @@ function toTitle(){
   $('invModal').classList.add('hidden');
   $('shopModal').classList.add('hidden');
   $('stairsModal').classList.add('hidden');
+  $('btnContinue').style.display = hasSave() ? '' : 'none';
   $('titleScreen').classList.remove('hidden');
   AudioSys.playBgm('title');
 }
@@ -4813,6 +5035,7 @@ buildTileSet();
 resize();
 loadRec();
 buildTitle();
+$('btnContinue').style.display = hasSave() ? '' : 'none';
 renderLog();
 requestAnimationFrame(loop);
 </script>
