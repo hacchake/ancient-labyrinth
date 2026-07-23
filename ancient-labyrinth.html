@@ -314,22 +314,23 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
           <tr><td>罠</td><td>毒沼・トゲ・溶岩… 色つきの床は踏むと危険</td></tr>
           <tr><td>装備はずす</td><td>持ち物画面で 装備欄のアイコンをクリック</td></tr>
           <tr><td>手なずけ</td><td>「手なずけの肉」を隣の敵に (弱らせると成功しやすい)</td></tr>
-          <tr><td>セーブ</td><td>S キー ／ 階段を降りるたび 自動でも記録される</td></tr>
-          <tr><td>再開</td><td>タイトルの「つづきから」で 続きを遊べる</td></tr>
           <tr><td>スキル</td><td>1〜4 キー / スキルボタン</td></tr>
           <tr><td>回復薬</td><td>Q キー / ボタン</td></tr>
           <tr><td>持ち物</td><td>E キー (捨てた物は床に残り拾い直せる)</td></tr>
           <tr><td>待機</td><td>スペース (MPが少し回復)</td></tr>
+          <tr><td><b style="color:var(--gold)">セーブ</b></td><td><b>S キー</b>で中断セーブ ／ 階段を降りるときも自動で記録</td></tr>
+          <tr><td><b style="color:var(--gold)">再開</b></td><td>タイトルの<b>「▶ つづきから」</b>を押す</td></tr>
           <tr><td>サウンド</td><td>M キー</td></tr>
         </table>
         <p style="margin-top:10px;color:var(--text-dim);font-size:12px">
-          階段で次の階へ。5階ごとにボスが出現。地下20階の主を倒せばクリア。<br>
+          🏰 階段で次の階へ。5階ごとにボスが出現。<b>地下100階</b>の主「虚無の支配者」を倒せばクリア。<br>
+          💾 <b>S キー</b>でいつでも中断セーブ。階段を降りるときも自動で記録され、
+          タイトルの<b>「つづきから」</b>で再開できる。<br>
           🏮 アイテム屋がたまに現れる。買い物のほか、同種アイテム2つの<b>合成</b>でレア度UP。<br>
-          🐺 笛や鈴、手なずけの肉で 自動で戦う仲間を最大2体 連れられる。<br>
+          🐺 笛や鈴、手なずけの肉で 自動で戦う仲間を連れられる (深く潜るほど増え 最大7体)。<br>
           📖 タイトルの「きろく」で実績とモンスター図鑑をチェック。<br>
           ⚠ まれに「モンスターの巣」がある。敵がひしめくが お宝も多い。<br>
           𝕏 冒険の結果は リザルト画面から投稿できる。<br>
-          🏰 目指すは地下100階、虚無の支配者。5階ごとにボスが待つ。<br>
           <span style="color:var(--text-dim)">製作: はっちゃけ</span><br>
           倒れたら全てを失う…慎重に、深く潜れ。</p>
       </div>
@@ -1203,7 +1204,7 @@ const CONSUMABLES = {
   elixir:   { name:'エリクサー',   sprite:'elixir',  desc:'HPとMPを全回復する',        w:4,  minFloor:8 },
   antidote: { name:'毒消し草',     sprite:'herb',    desc:'毒を治療し、HPを少し回復',   w:12, minFloor:3 },
   bag:      { name:'冒険者のカバン', sprite:'bag',    desc:'持ち物の枠が 3 ふえる (最大100)', w:7, minFloor:2 },
-  wolfWhistle:{ name:'白狼の笛',   sprite:'wolf',    desc:'白狼を召喚し仲間にする (最大2体)', w:6, minFloor:3, ally:'wolf' },
+  wolfWhistle:{ name:'白狼の笛',   sprite:'wolf',    desc:'白狼を召喚し仲間にする', w:6, minFloor:3, ally:'wolf' },
   fairyBell:{ name:'妖精の鈴',     sprite:'fairy',   desc:'魔弾を放つ妖精を召喚する', w:5, minFloor:5, ally:'fairy' },
   healSigil:{ name:'癒しの聖印',   sprite:'holyWater', desc:'味方を癒す 癒しの精霊を呼ぶ', w:4, minFloor:6, ally:'spirit' },
   bomb:     { name:'爆裂弾',       sprite:'bomb',    desc:'視界内の敵に投げ 周囲1マスを爆破', w:8, minFloor:2 },
