@@ -1158,6 +1158,27 @@ defVariant('titanShade', 'golem',    '巨神の影',         { S:'#2a2a3a', s:'#
 defVariant('voidMage',   'darkMage', '虚無の術師',       { V:'#1a1030', v:'#100a1e', R:'#ff3a6a', O:'#a05aff' }, 4.0, 84, { range: 6 });
 defVariant('finalGuard', 'skeleton', '最果ての番人',     { W:'#e0e0f0', w:'#a0a0c0', E:'#ff3a6a' }, 4.4, 92, { def: 24 });
 defVariant('abyssSpider','spider',   '深淵の蜘蛛',       { V:'#2a1a3a', v:'#1a1024', R:'#ff5ad0' }, 4.2, 95, { poison:true });
+// さらに層を厚く (各帯に個性ある敵を追加)
+defVariant('sandSlime',  'slime',    'すなスライム',     { G:'#c8b07a', H:'#e8d8a8', D:'#8a7a4a' }, 1.4, 3);
+defVariant('nightBat',   'bat',      'よるのコウモリ',   { V:'#1a1a3a', v:'#101024', R:'#8ae0ff' }, 1.5, 7);
+defVariant('thugGoblin', 'goblin',   'ならず者',         { G:'#8a7a3a', g:'#5c5024', B:'#6a4a2a' }, 1.4, 8);
+defVariant('rustGolem',  'golem',    'さび人形',         { S:'#8a5a3a', s:'#5c3a24', R:'#ffa050' }, 1.4, 10, { ai:'slow' });
+defVariant('poisonBat',  'bat',      '毒コウモリ',       { V:'#3a5a2a', v:'#243a18', R:'#a0ff60' }, 1.6, 13, { poison:true });
+defVariant('bloodOrc',   'orc',      '血染めのオーク',   { G:'#8a3a3a', g:'#5c2424', B:'#c8a060' }, 1.8, 16);
+defVariant('frostSpider','spider',   '氷蜘蛛',           { V:'#3a6a8a', v:'#24445c', R:'#a0e0ff' }, 1.9, 19);
+defVariant('shadowMage', 'darkMage', '影の魔術師',       { V:'#2a2a3a', v:'#1a1a26', R:'#c060ff', O:'#8a5ad0' }, 2.0, 22, { range: 5 });
+defVariant('boneGiant',  'skeleton', '巨骨兵',           { W:'#c8c0a8', w:'#98907a', E:'#ff8a30' }, 2.4, 27, { drawScale: 1.3 });
+defVariant('miasmaSlime','iceSlime', '瘴気スライム',     { G:'#5a7a4a', H:'#8ac070', D:'#3a5030' }, 2.4, 31, { poison:true });
+defVariant('cursedKnight','skeleton','呪われた鎧',       { W:'#3a3a4a', w:'#242430', E:'#c060ff' }, 2.8, 36, { def: 16 });
+defVariant('flameWraith','wraith',   '炎の亡霊',         { W:'#ff8a4a', w:'#c05a20' }, 2.8, 41, { undead:true });
+defVariant('stoneTitan', 'golem',    '石の巨人',         { S:'#6a6a6a', s:'#444', R:'#c8c8d8' }, 3.0, 47, { ai:'slow', drawScale: 1.4 });
+defVariant('venomLich',  'lich',     '毒の死霊',         { B:'#8ac070', b:'#5a8a48' }, 3.0, 53, { undead:true, poison:true });
+defVariant('dreadHound', 'hellHound','戦慄の魔犬',       { W:'#4a1a3a', w:'#2e1024', E:'#ff5ad0' }, 3.2, 58);
+defVariant('astralMage', 'darkMage', '星詠みの魔術師',   { V:'#1a2a5a', v:'#101a38', R:'#8ae0ff', O:'#6ab0ff' }, 3.4, 64, { range: 6 });
+defVariant('doomGolem',  'magmaGolem','終焉のゴーレム',  { S:'#3a1a1a', s:'#241010', R:'#ff3a2a' }, 3.6, 71, { ai:'slow' });
+defVariant('phantomKing','wraith',   '幻影の王',         { W:'#d0c0ff', w:'#9080c8' }, 3.8, 77, { undead:true });
+defVariant('abyssDragon','hellHound','深淵の竜',         { W:'#2a4a3a', w:'#182e24', E:'#ffd75a' }, 4.0, 86);
+defVariant('eternalGuard','golem',   '永劫の守護者',     { S:'#5a4a7a', s:'#3a2e50', R:'#ffd75a' }, 4.6, 97, { def: 26 });
 // (エンドレス用ボス候補は ENDLESS_BOSSES の定義側で拡張済み)
 const BOSS_TABLE = { 5:'goblinKing', 10:'boneDragon', 15:'demonLord', 20:'elderDragon' };
 const BOSS_CYCLE = ['goblinKing','boneDragon','demonLord','frostDragon','titanGolem','shadowKing','infernoDragon','elderDragon'];
@@ -1180,8 +1201,26 @@ const WEAPON_BASES = [
   { name:'竜騎士の槍', atk:18, reach:2, crit:4 },
   { name:'賢者の杖',   atk:9,  mag:18, range:5, magic:true },
   { name:'竜牙の剣',   atk:22, crit:5 },
+  { name:'こん棒',     atk:3 },
+  { name:'鉄の斧',     atk:9 },
+  { name:'細身の剣',   atk:7,  crit:4 },
+  { name:'戦鎌',       atk:13, reach:2 },
+  { name:'双剣',       atk:11, crit:6 },
+  { name:'투石器',     atk:5,  range:4 },
+  { name:'銀の弓',     atk:13, range:5, crit:3 },
+  { name:'炎の剣',     atk:15, mag:6 },
+  { name:'氷結の斧',   atk:17 },
+  { name:'雷神の槍',   atk:20, reach:2, crit:5 },
+  { name:'聖銀の大剣', atk:25, crit:4 },
 ];
 const ARMOR_BASES = [
+  { name:'旅人の外套', def:2 },
+  { name:'皮の胸当て', def:4 },
+  { name:'鎖かたびら', def:7 },
+  { name:'鉄の鎧',     def:10 },
+  { name:'魔道のローブ', def:6, mp:12 },
+  { name:'銀の鎧',     def:14 },
+  { name:'竜鱗の鎧',   def:18, hp:15 },
   { name:'布の服',     def:2 },
   { name:'革の鎧',     def:4,  hp:6 },
   { name:'鎖かたびら', def:7,  hp:12 },
@@ -1189,6 +1228,13 @@ const ARMOR_BASES = [
   { name:'竜鱗の鎧',   def:16, hp:34 },
 ];
 const ACC_BASES = [
+  { name:'銅の腕輪',   atk:2 },
+  { name:'守りの護符', def:3 },
+  { name:'知恵の耳飾り', mag:5 },
+  { name:'活力の首飾り', hp:14 },
+  { name:'魔力の指輪', mp:14 },
+  { name:'鷹の眼',     crit:5 },
+  { name:'古龍の牙',   atk:6, crit:3 },
   { name:'力の指輪',   atk:4 },
   { name:'守りの指輪', def:4 },
   { name:'命のお守り', hp:26 },
@@ -1220,6 +1266,13 @@ const CONSUMABLES = {
   seedGuard:{ name:'まもりの種',   sprite:'seed',    desc:'まもりが永続で 2 あがる', w:3, minFloor:5 },
   fruitLife:{ name:'いのちの実',   sprite:'fruit',   desc:'最大HPが永続で 8 あがる', w:3, minFloor:4 },
   tameMeat: { name:'手なずけの肉', sprite:'meat',    desc:'となりの敵を仲間に誘う (弱った敵ほど成功)', w:6, minFloor:3 },
+  bread:    { name:'黒パン',       sprite:'meat',    desc:'HPを 少し回復する (30)', w:8, minFloor:1 },
+  megaPotion:{name:'万能薬',       sprite:'potion',  desc:'HP全快 & 状態異常も治す', w:2, minFloor:12 },
+  mpHerb:   { name:'魔力の草',     sprite:'ether',   desc:'MPを 25 回復する', w:6, minFloor:2 },
+  atkSeed:  { name:'荒ぶる種',     sprite:'seed',    desc:'このフロアの間 攻撃力が1.5倍', w:4, minFloor:6 },
+  defSeed:  { name:'守りの種',     sprite:'seed',    desc:'このフロアの間 守備力が1.5倍', w:4, minFloor:6 },
+  speedHerb:{ name:'俊足の草',     sprite:'seed',    desc:'このフロアの間 敵より速く動ける', w:3, minFloor:9 },
+  panicScroll:{name:'混乱の巻物',  sprite:'scroll',  desc:'見えている敵を まとめて眠らせる', w:4, minFloor:7 },
 };
 
 /* ═══════════════ [ALLIES] 仲間データ ═══════════════
@@ -2019,6 +2072,18 @@ const TILE_THEMES = [
   { name:'虚無の回廊', floor:'#221a30', speck:'#302344', edge:'#171022', crack:'#42306a', accent:'#a05aff',
     wallTop:'#120c1c', wallTopSpeck:'#1e1430',
     face:'#3e2e56', faceHi:'#4c3a6a', mortar:'#261c38', faceShadow:'#0d081a', ambient:'rgba(140,80,220,.08)' },
+  { name:'紅蓮の坑道', floor:'#2e1c1c', speck:'#442626', edge:'#1e1010', crack:'#6a2a2a', accent:'#ff6a4a',
+    wallTop:'#180d0d', wallTopSpeck:'#281616',
+    face:'#523030', faceHi:'#663c3c', mortar:'#301c1c', faceShadow:'#120808', ambient:'rgba(220,80,50,.055)' },
+  { name:'翡翠の神殿', floor:'#1a2e28', speck:'#26443a', edge:'#101e1a', crack:'#2a6a56', accent:'#4ad0a0',
+    wallTop:'#0d1815', wallTopSpeck:'#162824',
+    face:'#2e5248', faceHi:'#3c6659', mortar:'#1c302a', faceShadow:'#081210', ambient:'rgba(60,200,150,.06)' },
+  { name:'白亜の遺構', floor:'#32323c', speck:'#4a4a58', edge:'#22222a', crack:'#5c5c6e', accent:'#d0d0e0',
+    wallTop:'#1d1d24', wallTopSpeck:'#2c2c36',
+    face:'#5c5c6c', faceHi:'#70707f', mortar:'#38384a', faceShadow:'#141419', ambient:'rgba(200,205,230,.05)' },
+  { name:'深海の廃墟', floor:'#16222e', speck:'#203244', edge:'#0e1620', crack:'#245068', accent:'#40a0c8',
+    wallTop:'#0a1018', wallTopSpeck:'#141e2a',
+    face:'#284050', faceHi:'#345264', mortar:'#182634', faceShadow:'#060c12', ambient:'rgba(50,140,190,.075)' },
 ];
 const TILESET = { floors:[], wallTop:null, wallFaces:[] };
 function buildTileSet(themeIdx){
@@ -2030,7 +2095,7 @@ function buildTileSet(themeIdx){
     return c;
   };
   TILESET.floors = [];
-  for (let v = 0; v < 6; v++){
+  for (let v = 0; v < 10; v++){
     TILESET.floors.push(mk(x => {
       x.fillStyle = T.floor; x.fillRect(0, 0, 16, 16);
       let s = v * 37 + 11;
@@ -2063,6 +2128,33 @@ function buildTileSet(themeIdx){
         x.fillStyle = T.crack;
         x.fillRect(4, 6, 1, 1); x.fillRect(10, 4, 1, 1);
       }
+      if (v === 6){ // 市松の敷石
+        x.fillStyle = T.speck;
+        x.fillRect(0, 0, 8, 8); x.fillRect(8, 8, 8, 8);
+        x.fillStyle = T.edge;
+        x.fillRect(7, 0, 1, 16); x.fillRect(0, 7, 16, 1);
+      }
+      if (v === 7 && T.accent){ // 古い文様(渦)が刻まれた床
+        x.fillStyle = T.accent;
+        x.globalAlpha = .45;
+        x.fillRect(5, 4, 6, 1); x.fillRect(10, 5, 1, 4); x.fillRect(6, 8, 5, 1);
+        x.fillRect(6, 6, 1, 2); x.fillRect(7, 6, 2, 1);
+        x.globalAlpha = 1;
+      }
+      if (v === 8){ // 縦長のタイル貼り
+        x.fillStyle = T.edge;
+        x.fillRect(5, 0, 1, 16); x.fillRect(11, 0, 1, 16);
+        x.fillRect(0, 5, 6, 1); x.fillRect(6, 10, 6, 1); x.fillRect(12, 3, 4, 1);
+        x.fillStyle = T.speck;
+        x.fillRect(2, 8, 1, 1); x.fillRect(8, 3, 1, 1); x.fillRect(13, 12, 1, 1);
+      }
+      if (v === 9){ // 割れて欠けた床
+        x.fillStyle = T.crack;
+        x.fillRect(2, 2, 1, 5); x.fillRect(3, 6, 4, 1); x.fillRect(7, 7, 1, 3);
+        x.fillRect(11, 3, 1, 4); x.fillRect(9, 12, 5, 1);
+        x.fillStyle = T.edge;
+        x.fillRect(12, 12, 3, 3);
+      }
     }));
   }
   TILESET.wallTop = mk(x => {
@@ -2070,7 +2162,7 @@ function buildTileSet(themeIdx){
     x.fillStyle = T.wallTopSpeck;
     x.fillRect(2, 3, 2, 1); x.fillRect(9, 6, 2, 1); x.fillRect(5, 11, 2, 1); x.fillRect(12, 13, 2, 1);
   });
-  // 壁は2種類 (レンガ / 大きな石組み) を市松状に混ぜて描く
+  // 壁は5種類 (レンガ / 大石 / 布積み / 柱付き / 崩れかけ) を混ぜて描く
   TILESET.wallFaces = [];
   TILESET.wallFaces.push(mk(x => {
     x.fillStyle = T.face; x.fillRect(0, 0, 16, 16);
@@ -2102,6 +2194,47 @@ function buildTileSet(themeIdx){
       x.fillRect(9, 8, 2, 1);
       x.globalAlpha = 1;
     }
+    x.fillStyle = T.faceShadow; x.fillRect(0, 15, 16, 1);
+  }));
+  // 3: 布積み(小さめの石を密に)
+  TILESET.wallFaces.push(mk(x => {
+    x.fillStyle = T.face; x.fillRect(0, 0, 16, 16);
+    x.fillStyle = T.faceHi; x.fillRect(0, 0, 16, 2);
+    x.fillStyle = T.mortar;
+    for (let yy = 4; yy < 16; yy += 3) x.fillRect(0, yy, 16, 1);
+    for (let yy = 0; yy < 16; yy += 3){
+      const off = (yy / 3) % 2 ? 0 : 3;
+      for (let xx = off; xx < 16; xx += 6) x.fillRect(xx, yy, 1, 3);
+    }
+    x.fillStyle = T.faceShadow; x.fillRect(0, 15, 16, 1);
+  }));
+  // 4: 柱が埋まった壁
+  TILESET.wallFaces.push(mk(x => {
+    x.fillStyle = T.face; x.fillRect(0, 0, 16, 16);
+    x.fillStyle = T.faceHi; x.fillRect(0, 0, 16, 2);
+    x.fillStyle = T.mortar;
+    for (let yy = 4; yy < 16; yy += 5) x.fillRect(0, yy, 16, 1);
+    // 中央の柱
+    x.fillStyle = T.faceHi;
+    x.fillRect(6, 2, 4, 14);
+    x.fillStyle = T.mortar;
+    x.fillRect(6, 2, 1, 14); x.fillRect(9, 2, 1, 14);
+    x.fillStyle = T.faceShadow;
+    x.fillRect(7, 5, 2, 1); x.fillRect(7, 10, 2, 1);
+    x.fillRect(0, 15, 16, 1);
+  }));
+  // 5: 崩れかけの壁
+  TILESET.wallFaces.push(mk(x => {
+    x.fillStyle = T.face; x.fillRect(0, 0, 16, 16);
+    x.fillStyle = T.faceHi; x.fillRect(0, 0, 16, 2);
+    x.fillStyle = T.mortar;
+    x.fillRect(0, 6, 16, 1); x.fillRect(0, 12, 16, 1);
+    x.fillRect(5, 0, 1, 6); x.fillRect(11, 6, 1, 6);
+    // 崩れて欠けた部分
+    x.fillStyle = T.faceShadow;
+    x.fillRect(2, 3, 3, 2); x.fillRect(12, 8, 3, 3); x.fillRect(7, 13, 4, 2);
+    x.fillStyle = T.crack || T.mortar;
+    x.fillRect(3, 7, 1, 4); x.fillRect(9, 2, 1, 3);
     x.fillStyle = T.faceShadow; x.fillRect(0, 15, 16, 1);
   }));
 }
@@ -2175,6 +2308,7 @@ function makePlayer(clsKey){
     lv:1, xp:0, gold:0, hp:1, mp:0, mpFrac:0,
     inv:[], equip:{ weapon:null, armor:null, acc:null },
     poison:0, buffAtk:0, buffMult:1, kills:0,
+    fAtk:1, fDef:1, haste:false,      // このフロアの間だけ効くバフ (種・草)
     bonus:{ atk:0, def:0, hp:0 },   // 種・実による永続上昇
   };
   p.invMax = CONFIG.INV_MAX;
@@ -2199,7 +2333,8 @@ function pstat(p){
   p.hp = Math.min(p.hp, p.maxHp);
   p.mp = Math.min(p.mp, p.maxMp);
 }
-const effAtk = p => Math.round(p.atk * (p.buffAtk > 0 ? p.buffMult : 1));
+const effAtk = p => Math.round(p.atk * (p.buffAtk > 0 ? p.buffMult : 1) * (p.fAtk || 1));
+const effDef = p => Math.round(p.def * (p.fDef || 1));
 
 /* ═══════════════ ダンジョン生成 ═══════════════ */
 /* 深くもぐるほど 引き連れられる仲間が増える (B1:2 → B10:3 → B20:4 → B40:5 → B70:6 → B90:7) */
@@ -2305,7 +2440,8 @@ function genFloor(fl){
   G.stairs = null; G.boss = null;
   G.floats = []; G.parts = []; G.projs = []; G.swings = []; G.autoPath = null;
   // ── タイルテーマ (階層帯で床・壁の雰囲気が変わる) ──
-  const th = fl >= 80 ? 5 : fl >= 55 ? 4 : fl >= 35 ? 3 : fl >= 20 ? 2 : fl >= 10 ? 1 : 0;
+  const th = fl >= 90 ? 9 : fl >= 80 ? 5 : fl >= 70 ? 8 : fl >= 60 ? 7 : fl >= 50 ? 4
+           : fl >= 42 ? 6 : fl >= 32 ? 3 : fl >= 22 ? 2 : fl >= 12 ? 1 : 0;
   if (th !== G.tileTheme){ G.tileTheme = th; buildTileSet(th); }
   // ── 部屋を配置 ──
   const targetRooms = 8 + rndi(0, 2);
@@ -2797,6 +2933,17 @@ function hitTarget(t, dmg, src){
   else damageAlly(t, dmg);
 }
 function enemyAttack(e, tgt){
+  // 守りの種の効果 (プレイヤーのみ)
+  if (tgt === G.player && (G.player.fDef || 1) > 1){
+    const saved = tgt.def;
+    tgt.def = Math.round(saved * G.player.fDef);
+    const r = enemyAttackRaw(e, tgt);
+    tgt.def = saved;
+    return r;
+  }
+  return enemyAttackRaw(e, tgt);
+}
+function enemyAttackRaw(e, tgt){
   tgt = tgt || G.player;
   const { dmg } = calcDamage(e.atk, tgt.def || 0, 1, 5);
   addMsg(e.name + 'の こうげき！');
@@ -2817,6 +2964,8 @@ function enemiesAct(){
       floatText(e.x, e.y, d, '#a0e070');
       if (e.hp <= 0){ killEnemy(e); continue; }
     }
+    if (e.sleep > 0){ e.sleep--; if (e.sleep === 0) addMsg(e.name + 'が 目をさました'); continue; }
+    if (G.player.haste){ e.hasteGate = (e.hasteGate || 0) ^ 1; if (!e.hasteGate) continue; }  // 俊足の草
     if (e.ai === 'slow'){ e.actGate ^= 1; if (!e.actGate) continue; }
     // ターゲット選択: プレイヤーと仲間のうち最寄り
     let tgt = G.player, td = chebDist(e.x, e.y, G.player.x, G.player.y);
@@ -3255,6 +3404,41 @@ function useConsumable(i, fromModal){
       p.hp = Math.min(p.maxHp, p.hp + 8);
       floatText(p.x, p.y, 'HP+8', '#7ae08a');
       addMsg('生命力が あふれだす！ (永続 +8)'); break;
+    case 'bread':
+      p.hp = Math.min(p.maxHp, p.hp + 30);
+      floatText(p.x, p.y, '+30', '#7ae08a');
+      addMsg('黒パンを かじった'); break;
+    case 'megaPotion':
+      p.hp = p.maxHp; p.poison = 0;
+      floatText(p.x, p.y, '全快', '#8affc0');
+      spawnParticles(p.x, p.y, '#8affc0', 12);
+      addMsg('体の傷が すっかり癒えた！'); break;
+    case 'mpHerb':
+      p.mp = Math.min(p.maxMp, p.mp + 25);
+      floatText(p.x, p.y, 'MP+25', '#6ab0ff');
+      addMsg('魔力が よみがえる'); break;
+    case 'atkSeed':
+      p.fAtk = 1.5;
+      floatText(p.x, p.y, 'ATK↑', '#ff9a50');
+      spawnParticles(p.x, p.y, '#ff9a50', 8);
+      addMsg('闘志が わきあがる！ (この階の間)'); break;
+    case 'defSeed':
+      p.fDef = 1.5;
+      floatText(p.x, p.y, 'DEF↑', '#7ab0ff');
+      spawnParticles(p.x, p.y, '#7ab0ff', 8);
+      addMsg('体が 鋼のように硬くなった (この階の間)'); break;
+    case 'speedHerb':
+      p.haste = true;
+      floatText(p.x, p.y, 'SPEED↑', '#ffd75a');
+      spawnParticles(p.x, p.y, '#ffd75a', 8);
+      addMsg('体が 軽い！ 敵より速く動ける (この階の間)'); break;
+    case 'panicScroll': {
+      const ts = G.enemies.filter(e2 => !e2.dead && G.visible.has(idx(e2.x, e2.y)));
+      if (!ts.length){ addMsg('周りに 敵がいない'); ok = false; break; }
+      ts.forEach(e2 => { e2.sleep = 6 + rndi(0, 4); spawnParticles(e2.x, e2.y, '#c8a8ff', 6); });
+      AudioSys.sfx('bolt');
+      addMsg(ts.length + '体が 眠りに落ちた！'); break;
+    }
     case 'tameMeat': {
       const t = adjacentEnemy();
       if (!t){ addMsg('となりに 敵がいない'); ok = false; break; }
@@ -3352,7 +3536,7 @@ function dropItem(i){
 /* ═══════════════ [SHOP] アイテム屋 ═══════════════ */
 const SHOP_BASE_PRICE = { potion:30, hiPotion:85, ether:60, elixir:240, antidote:35, bag:160, wolfWhistle:190, fairyBell:230,
   bomb:45, holyWater:55, mapScroll:50, warpScroll:40, seedPower:300, seedGuard:300, fruitLife:320, tameMeat:120,
-  healSigil:210 };
+  healSigil:210, bread:18, megaPotion:400, mpHerb:45, atkSeed:150, defSeed:150, speedHerb:200, panicScroll:130 };
 const CRAFT_UP = { potion:'hiPotion', hiPotion:'elixir', ether:'elixir', antidote:'ether' }; // 消費アイテムの合成先
 function priceOfConsume(key, fl){ return Math.round((SHOP_BASE_PRICE[key] || 50) * (1 + fl * .05)); }
 function priceOfEquip(it, fl){
@@ -3515,6 +3699,7 @@ function descend(){
   if (G.floor > REC.bestFloor) REC.bestFloor = G.floor;
   saveRec();
   G.deepest = Math.max(G.deepest, G.floor);
+  if (G.player){ G.player.fAtk = 1; G.player.fDef = 1; G.player.haste = false; }  // フロアバフは階を移ると切れる
   AudioSys.sfx('stairs');
   genFloor(G.floor);
   saveGame(true);              // 階を降りるたび 自動で中断セーブ
@@ -3830,6 +4015,12 @@ function draw(now){
       if (e.poison > 0){
         ctx.fillStyle = '#8ae060';
         ctx.fillRect(X - sz * .4, sy3, TILE * .1, TILE * .1);
+      }
+      if (e.sleep > 0){   // 眠っている敵は zzz
+        ctx.fillStyle = '#c8c8ff';
+        ctx.font = 'bold ' + Math.round(TILE * .3) + "px 'DotGothic16', monospace";
+        ctx.textAlign = 'center';
+        ctx.fillText('z', X + sz * .34, sy3 + TILE * .12);
       }
     });
   }
