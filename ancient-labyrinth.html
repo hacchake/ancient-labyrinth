@@ -104,7 +104,7 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
 @media(pointer:coarse){ #minimapWrap{top:96px} }
 
 /* ── モーダル共通 ── */
-.modal{position:absolute;inset:0;z-index:20;background:rgba(0,0,10,.72);
+.modal{position:absolute;inset:0;z-index:40;background:rgba(0,0,10,.72);
   display:flex;align-items:center;justify-content:center;pointer-events:auto}
 .hidden{display:none !important}
 .modalBox{background:var(--panel);border:3px solid var(--border-hi);
@@ -155,7 +155,7 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
 .invSlot{position:relative}
 .stackN{position:absolute;right:2px;bottom:1px;font-size:9px;color:#ffd75a;text-shadow:0 1px 2px #000;pointer-events:none}
 #achToast{position:fixed;top:54px;left:50%;transform:translate(-50%,-16px);background:#1c1c30;border:1px solid var(--gold);
-  color:var(--gold);padding:8px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.3s;z-index:60;pointer-events:none;white-space:nowrap}
+  color:var(--gold);padding:8px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.3s;z-index:70;pointer-events:none;white-space:nowrap}
 #achToast.show{opacity:1;transform:translate(-50%,0)}
 .achRow{display:flex;justify-content:space-between;gap:10px;padding:4px 2px;border-bottom:1px solid #26263c;font-size:11px;opacity:.5}
 .achRow.got{opacity:1}
@@ -190,6 +190,8 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
 .resultStats{font-size:15px;line-height:2.1;margin-bottom:26px;color:var(--text)}
 .resultStats b{color:var(--gold)}
 .resultBtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btnX{background:#0f0f14;border-color:#e8e8f0;color:#e8e8f0}
+.btnX:hover,.btnX:active{background:#e8e8f0;color:#0f0f14;border-color:#e8e8f0}
 
 /* ── ヘルプ ── */
 #helpBox{font-size:13px;line-height:2}
@@ -295,7 +297,10 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
       <div id="recAch"></div>
       <div class="shopSec">▼ モンスター図鑑 <span id="recZukanCount" class="sSub"></span></div>
       <div id="recZukan"></div>
-      <div style="text-align:center;margin-top:14px"><button class="btn" id="recordsClose">とじる</button></div>
+      <div style="text-align:center;margin-top:14px">
+        <button class="btn btnX" id="recShare">𝕏 に記録を投稿</button>
+        <button class="btn" id="recordsClose">とじる</button>
+      </div>
     </div>
   </div>
   <div id="achToast"></div>
@@ -355,7 +360,7 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
       <h1>力尽きた…</h1>
       <div class="resultStats" id="goStats"></div>
       <div class="resultBtns">
-        <button class="btn" id="goShare">𝕏 に結果を投稿</button>
+        <button class="btn btnX" id="goShare">𝕏 に結果を投稿</button>
         <button class="btn" id="goRetry">同じ職業で再挑戦</button>
         <button class="btn" id="goTitleBtn">タイトルへ</button>
       </div>
@@ -377,7 +382,7 @@ canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
         <div class="crT">FIN</div>
       </div></div>
       <div class="resultBtns">
-        <button class="btn" id="clearShare">𝕏 に結果を投稿</button>
+        <button class="btn btnX" id="clearShare">𝕏 に結果を投稿</button>
         <button class="btn" id="clearEndless">さらに深淵へ (エンドレス)</button>
         <button class="btn" id="clearTitleBtn">タイトルへ</button>
       </div>
@@ -4566,19 +4571,34 @@ const SHARE_URL = 'https://hacchake.github.io/ancient-labyrinth/';
 function shareToX(kind){
   const p = G.player;
   const fl = G.deepest || G.floor || 1;
-  const cls = p ? CLASSES[p.clsKey].name : '冒険者';
-  let head;
-  if (kind === 'clear') head = '『古の迷宮』地下100階の主を討ち果たした！';
-  else if (kind === 'gameover') head = '『古の迷宮』B' + fl + 'F で力尽きた…';
-  else head = '『古の迷宮』B' + fl + 'F を探索中！';
-  const body = [
-    head,
-    '職業: ' + cls + ' / Lv' + (p ? p.lv : 1),
-    '到達: B' + fl + 'F ／ スコア: ' + G.score,
-    (REC.bestFloor ? '自己最高: B' + REC.bestFloor + 'F' : ''),
-    '',
-    '#古の迷宮 #ブラウザゲーム',
-  ].filter(Boolean).join('\n');
+  let body;
+  if (kind === 'record'){
+    // きろく画面から: 自己ベストと図鑑の進みぐあいを投稿
+    const zk = Object.keys(REC.kills).length, zkAll = Object.keys(ENEMIES).length;
+    const ach = ACHIEVEMENTS.filter(a => REC.ach[a.key]).length;
+    body = [
+      '『古の迷宮』の冒険のきろく',
+      '最深到達: B' + REC.bestFloor + 'F ／ 最高スコア: ' + REC.bestScore,
+      '総討伐: ' + totalKills() + '体 ／ 図鑑 ' + zk + '/' + zkAll + '種',
+      '実績: ' + ach + '/' + ACHIEVEMENTS.length,
+      '',
+      '#古の迷宮 #ブラウザゲーム',
+    ].join('\n');
+  } else {
+    const cls = p ? CLASSES[p.clsKey].name : '冒険者';
+    let head;
+    if (kind === 'clear') head = '『古の迷宮』地下100階の主を討ち果たした！';
+    else if (kind === 'gameover') head = '『古の迷宮』B' + fl + 'F で力尽きた…';
+    else head = '『古の迷宮』B' + fl + 'F を探索中！';
+    body = [
+      head,
+      '職業: ' + cls + ' / Lv' + (p ? p.lv : 1),
+      '到達: B' + fl + 'F ／ スコア: ' + G.score,
+      (REC.bestFloor ? '自己最高: B' + REC.bestFloor + 'F' : ''),
+      '',
+      '#古の迷宮 #ブラウザゲーム',
+    ].filter(Boolean).join('\n');
+  }
   const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(body) +
               '&url=' + encodeURIComponent(SHARE_URL);
   window.open(url, '_blank', 'noopener');
@@ -4948,6 +4968,7 @@ $('btnRecords').addEventListener('click', () => {
   AudioSys.sfx('select');
 });
 $('recordsClose').addEventListener('click', () => $('recordsModal').classList.add('hidden'));
+$('recShare').addEventListener('click', () => shareToX('record'));
 
 /* ═══════════════ 画面遷移 ═══════════════ */
 function buildTitle(){
